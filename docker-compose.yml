@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  app:
+    container_name: cartService
+    build:
+      context: ./
+      dockerfile: ./.docker/Dockerfile
+    image: 'laravelapp'
+    ports:
+      - 9001:80
+    links:
+      - cartDb
+    volumes:
+      - .:/var/www/html/laravelMS/ezKartCartService
+    networks:
+      - ezkartaccservice_internal-network
+
+  cartDb:
+    container_name: cartDb
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3310:3306"
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - cartVolume:/var/lib/mysql
+    networks:
+      - ezkartaccservice_internal-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - '8092:80'
+    restart: always
+    environment:
+        PMA_HOST: cartDb
+    depends_on:
+        - cartDb
+    networks:
+      - ezkartaccservice_internal-network
+
+volumes:
+  cartVolume:
+    driver: local
+
+networks:
+  ezkartaccservice_internal-network:
+    external: true
