@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/addToCart', [App\Http\Controllers\CartController::class, "addToCart"]);
+Route::post('/updateProductQuantityInCart', [App\Http\Controllers\CartController::class, "updateProductQuantityInCart"]);
+Route::delete('/emptyCart/{userId}', [App\Http\Controllers\CartController::class, "emptyCart"]);
